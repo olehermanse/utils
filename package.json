@@ -1,6 +1,6 @@
 {
   "name": "@olehermanse/utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Utility functions in js / ts",
   "type": "module",
   "author": "Ole Herman S. Elgesem",
@@ -8,11 +8,11 @@
   "main": "dist/utils.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./index.js",
-    "./colors.js": "./colors.js",
-    "./draw.js": "./draw.js",
-    "./funcs.js": "./funcs.js",
-    "./schema.js": "./schema.js"
+    ".": "./dist/index.js",
+    "./colors.js": "./dist/colors.js",
+    "./draw.js": "./dist/draw.js",
+    "./funcs.js": "./dist/funcs.js",
+    "./schema.js": "./dist/schema.js"
   },
   "files": [
     "dist"
