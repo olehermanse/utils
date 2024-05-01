@@ -1,0 +1,33 @@
+{
+  "name": "@olehermanse/utils",
+  "version": "0.0.1",
+  "description": "Utility functions in js / ts",
+  "type": "module",
+  "author": "Ole Herman S. Elgesem",
+  "license": "MIT",
+  "main": "dist/utils.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./index.js",
+    "./colors.js": "./colors.js",
+    "./draw.js": "./draw.js",
+    "./funcs.js": "./funcs.js",
+    "./schema.js": "./schema.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "util"
+  ],
+  "scripts": {
+    "test": "vitest",
+    "lint": "tsc --noEmit",
+    "build": "tsc --declaration",
+    "prepublish": "npm test"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.3"
+  }
+}
