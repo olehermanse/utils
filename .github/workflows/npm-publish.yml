@@ -32,4 +32,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
   call-bump-version:
-    uses: ./.github/workflows/bump-version.yml
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/bump-version.yml
