@@ -46,3 +46,4 @@ jobs:
           reviewers: |
             olehermanse
           branch: version-bump
+          base: ${{ github.head_ref }}
