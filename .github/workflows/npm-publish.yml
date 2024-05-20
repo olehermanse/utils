@@ -35,5 +35,10 @@ jobs:
     needs: publish-npm
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/workflows/bump-version.yml
+      - name: "Checkout"
+        uses: actions/checkout@v4
+      - name: Copy files
+        working-directory: ${{ env.WORK_DIR }}/local_checkout
+        run: cp -r .github "$GITHUB_WORKSPACE/"
+      - name: "Call"
+        uses: ./.github/workflows/bump-version.yml
