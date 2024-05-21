@@ -33,4 +33,5 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
   call-bump-version:
     needs: publish-npm
-    uses: call-bump-version: ./.github/workflows/bump-version.yml
+    uses:
+      call-bump-version: ./.github/workflows/bump-version.yml
