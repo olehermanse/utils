@@ -71,4 +71,3 @@ jobs:
           reviewers: |
             olehermanse
           branch: version-bump
-          base: main
