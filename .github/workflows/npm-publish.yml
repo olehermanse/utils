@@ -46,28 +46,12 @@ jobs:
           git diff --exit-code || touch git_diff_exists
           if [ -f git_diff_exists ]; then echo "Changes need to be commited"; else echo "No changes to commit"; fi
 
-      - name: Commit package.json
+      - name: Commit and push
         if: hashFiles('git_diff_exists') != ''
         run: |
           git config user.name 'GitHub'
           git config user.email '<noreply@github.com>'
           git add package.json
           git commit -F commit_message.txt || echo "package.json is not changed"
-
-      - id: commit-message-from-file
-        name: Parse commit message from file into variable
-        if: hashFiles('git_diff_exists') != ''
-        run: |
-          body=$(cat commit_message.txt)
-          body="${body//$'\n'/'%0A'}"
-          echo ::set-output name=body::$body
-
-      - name: Create Pull Request
-        if: hashFiles('git_diff_exists') != ''
-        uses: peter-evans/create-pull-request@v6
-        with:
-          title: Version bump after release
-          body: ${{ steps.commit-message-from-file.outputs.body }}
-          reviewers: |
-            olehermanse
-          branch: version-bump
+          git reset --hard HEAD
+          git push
