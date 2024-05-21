@@ -33,3 +33,4 @@ lerna-debug.log*
 # GH Actions:
 
 commit_message.txt
+git_diff_exists
