@@ -54,4 +54,4 @@ jobs:
           git add package.json
           git commit -F commit_message.txt || echo "package.json is not changed"
           git reset --hard HEAD
-          git push
+          git push origin HEAD:main
