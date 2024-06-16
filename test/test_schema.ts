@@ -33,7 +33,7 @@ describe("to_class", () => {
   });
   test("a valid object", () => {
     let s = { foo: "bar" };
-    let a = <FooBar>to_class(s, new FooBar());
+    let a = <FooBar> to_class(s, new FooBar());
     expect(a).not.toBe(null);
     expect(a).not.toBeInstanceOf(Error);
     expect(a?.foo).toBe("bar");

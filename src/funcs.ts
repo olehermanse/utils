@@ -1,10 +1,31 @@
 import type { CR, FillStroke, XY } from "./interfaces.js";
 
+export class OXY {
+  // An x, y screen space pixel offset,
+  // which forces you to convert it to canvas coordinates
+  ox: number;
+  oy: number;
+  source: HTMLCanvasElement;
+  constructor(ox: number, oy: number, source: HTMLCanvasElement) {
+    this.ox = ox;
+    this.oy = oy;
+    this.source = source;
+  }
+
+  to_xy(target: WH): XY {
+    return offset_to_xy(this, target);
+  }
+}
+
+export function oxy(ox: number, oy: number, source: HTMLCanvasElement): OXY {
+  return new OXY(ox, oy, source);
+}
+
 export function xy(x: number, y: number): XY {
   return { x: x, y: y };
 }
 
-export function position(c: number, r: number): CR {
+export function cr(c: number, r: number): CR {
   return { c: c, r: r };
 }
 
@@ -12,39 +33,88 @@ export function fill_stroke(f: string, s: string): FillStroke {
   return { fill: f, stroke: s };
 }
 
-export function seconds(ms: number): number {
-  return ms / 1000;
+export function distance_xy(a: XY, b: XY) {
+  return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 }
 
-export function dps(dps: number, ms: number): number {
-  return dps * seconds(ms);
-}
-
-export function number_string(n: number | string): string {
-  const num = Number(n);
-  if (num < 0) {
-    return "-" + number_string(-1 * num);
-  }
-  const s = "" + num;
-  if (s.includes("e") || s.length <= 3) {
-    return s;
-  }
-
-  let result = "";
-  let length = 0;
-  for (const c of s.split("").reverse()) {
-    result += c;
-    length += 1;
-    if (length % 3 === 0) {
-      result += " ";
-    }
-  }
-  return result.split("").reverse().join("").trim();
+export function distance_cr(a: CR, b: CR) {
+  return Math.sqrt((b.c - a.c) ** 2 + (b.r - a.r) ** 2);
 }
 
 export function distance(a: CR, b: CR): number {
   return Math.sqrt((a.r - b.r) ** 2 + (a.c - b.c) ** 2);
 }
+
+export function offset_to_xy(offset: OXY, target: WH): XY {
+  const source = offset.source;
+  const x = (target.width * offset.ox) / source.getBoundingClientRect().width;
+  const y = (target.height * offset.oy) / source.getBoundingClientRect().height;
+  return xy(x, y);
+}
+
+export function xy_to_cr(p: XY, grid: Grid): CR {
+  const col = Math.floor((grid.columns * p.x) / grid.width);
+  const row = Math.floor((grid.rows * p.y) / grid.height);
+  return cr(col, row);
+}
+
+export function cr_to_xy(p: CR, grid: Grid): XY {
+  return xy(
+    Math.floor(p.c * grid.cell_width),
+    Math.floor(p.r * grid.cell_height),
+  );
+}
+
+export function cr_to_xy_centered(p: CR, grid: Grid): XY {
+  return xy(
+    Math.round((0.5 + p.c) * grid.cell_width),
+    Math.round((0.5 + p.r) * grid.cell_height),
+  );
+}
+
+export class WH {
+  width: number;
+  height: number;
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
+}
+
+export function wh(width: number, height: number): WH {
+  return new WH(width, height);
+}
+
+export class Grid {
+  width: number;
+  height: number;
+  columns: number;
+  rows: number;
+  constructor(width: number, height: number, columns: number, rows: number) {
+    this.width = width;
+    this.height = height;
+    this.columns = columns;
+    this.rows = rows;
+  }
+
+  get cell_width(): number {
+    return this.width / this.columns;
+  }
+
+  get cell_height(): number {
+    return this.height / this.rows;
+  }
+}
+
+export function get_rotation(a: CR, b: CR): number {
+  const rot = Math.atan2(a.r - b.r, b.c - a.c);
+  if (rot > 0.0) {
+    return rot;
+  }
+  return rot + 2 * Math.PI;
+}
+
+// Numbers / math:
 
 export function limit(min: number, x: number, max: number): number {
   if (x < min) {
@@ -56,12 +126,12 @@ export function limit(min: number, x: number, max: number): number {
   return x;
 }
 
-export function get_rotation(a: CR, b: CR): number {
-  const rot = Math.atan2(a.r - b.r, b.c - a.c);
-  if (rot > 0.0) {
-    return rot;
-  }
-  return rot + 2 * Math.PI;
+export function seconds(ms: number): number {
+  return ms / 1000;
+}
+
+export function dps(dps: number, ms: number): number {
+  return dps * seconds(ms);
 }
 
 // min and max are both inclusive
@@ -72,15 +142,7 @@ export function randint(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export function shuffle(array: any[]): any[] {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = randint(0, i);
-    const temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-  return array;
-}
+// Text wrapping:
 
 export class TextWrapper {
   original: string;
@@ -187,6 +249,8 @@ export function text_wrap(text: any, line_length: any): string {
   return tw.run();
 }
 
+// Resolution:
+
 // Since we need all clients and the backend to agree on a width and height,
 // for the coordinate system in each game, we define those here.
 // Thus, by default we create games and canvas elements with a 1280x720px resolution.
@@ -203,15 +267,21 @@ export function standard_canvas_height(): number {
   return 720;
 }
 
-const USERNAMES = ["Turtle", "Bison", "Cheetah", "Gecko", "Orca", "Camel"];
+// Usernames and IDs:
 
-export function random_element<T>(a: Array<T>): T {
-  return a[Math.floor(Math.random() * a.length)];
-}
+const USERNAMES = ["Turtle", "Bison", "Cheetah", "Gecko", "Orca", "Camel"];
 
 export function get_random_username(): string {
   return random_element(USERNAMES);
 }
+
+export function get_random_userid(): string {
+  const array = new Uint32Array(14);
+  const digits = array.map((_) => randint(0, 9));
+  return digits.join("");
+}
+
+//  Cookies:
 
 export function get_cookie(key: string): string | null {
   const value = document.cookie
@@ -228,11 +298,7 @@ export function set_cookie(key: string, value: string) {
   document.cookie = `${key}=${value}; Secure`;
 }
 
-export function get_random_userid(): string {
-  const array = new Uint32Array(14);
-  const digits = array.map((_) => randint(0, 9));
-  return digits.join("");
-}
+// String operations:
 
 export function left_pad(s: string | number, n: number, pad = " ") {
   let result = "" + s;
@@ -258,4 +324,109 @@ export function strip_prefix(prefix: string, string: string) {
     return string;
   }
   return string.slice(prefix.length);
+}
+
+export function number_string(n: number | string): string {
+  const num = Number(n);
+  if (num < 0) {
+    return "-" + number_string(-1 * num);
+  }
+  const s = "" + num;
+  if (s.includes("e") || s.length <= 3) {
+    return s;
+  }
+
+  let result = "";
+  let length = 0;
+  for (const c of s.split("").reverse()) {
+    result += c;
+    length += 1;
+    if (length % 3 === 0) {
+      result += " ";
+    }
+  }
+  return result.split("").reverse().join("").trim();
+}
+
+// Array / data structure operations:
+
+export function shuffle(array: any[]): any[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = randint(0, i);
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
+export function random_element<T>(a: Array<T>): T {
+  return a[Math.floor(Math.random() * a.length)];
+}
+
+export function deep_copy<T>(obj: T): T {
+  return structuredClone(obj);
+}
+
+export function array_remove<T>(arr: T[], obj: T) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === obj) {
+      arr.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+// HTTP:
+
+export async function http_get(url: string): Promise<object> {
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.json();
+}
+
+export async function get_png(url: string): Promise<Blob> {
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "image/png",
+    },
+  });
+  return response.blob();
+}
+
+export async function http_delete(url: string): Promise<object> {
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.json();
+}
+
+export async function http_put(url: string, data: object): Promise<object> {
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+export async function http_post(url: string, data: object): Promise<object> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
 }
