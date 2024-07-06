@@ -1,10 +1,17 @@
 const PI = 3.14159;
 const LINE_RATIO = 0.1;
+let custom_scale: number | undefined = undefined;
 
-function SCALE(): number {
-  // This should be a constant, but I want this file to be importable by deno,
-  // so not using a global variable for this.
-  return window.devicePixelRatio;
+function set_custom_scale(s: number){
+    custom_scale = s;
+}
+function SCALE() {
+    if (custom_scale !== undefined) {
+        return custom_scale;
+    }
+    // This should be a constant, but I want this file to be importable by deno,
+    // so not using a global variable for this.
+    return window.devicePixelRatio;
 }
 
 import type { XY, XYR, XYWH } from "./interfaces.js";
@@ -370,4 +377,5 @@ export const Draw = {
   text_top_left,
   grid,
   healthbar,
+  set_custom_scale,
 };
