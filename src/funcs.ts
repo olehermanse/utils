@@ -72,6 +72,35 @@ export function cr_to_xy_centered(p: CR, grid: Grid): XY {
   );
 }
 
+export function xy_copy(pos: XY) {
+  return xy(pos.x, pos.y);
+}
+
+export function cr_4_neighbors(
+  pos: CR,
+  up?: boolean,
+  down?: boolean,
+  left?: boolean,
+  right?: boolean,
+): CR[] {
+  const c = pos.c;
+  const r = pos.r;
+  const results = [];
+  if (up === undefined || up === true) {
+    results.push(cr(c, r - 1));
+  }
+  if (down === undefined || down === true) {
+    results.push(cr(c, r + 1));
+  }
+  if (left === undefined || left === true) {
+    results.push(cr(c - 1, r));
+  }
+  if (right === undefined || right === true) {
+    results.push(cr(c + 1, r));
+  }
+  return results;
+}
+
 export class WH {
   width: number;
   height: number;
@@ -81,8 +110,50 @@ export class WH {
   }
 }
 
+export interface Rectangle {
+  xy: XY;
+  wh: WH;
+}
+
 export function wh(width: number, height: number): WH {
   return new WH(width, height);
+}
+
+export function rectangle(xy: XY, wh: WH): Rectangle {
+  return {
+    xy: xy,
+    wh: wh,
+  };
+}
+
+export function inside(point: XY, rect: Rectangle): boolean {
+  if (point.x < rect.xy.x) {
+    return false;
+  }
+  if (point.y < rect.xy.y) {
+    return false;
+  }
+  if (point.x > rect.xy.x + rect.wh.width) {
+    return false;
+  }
+  if (point.y > rect.xy.y + rect.wh.height) {
+    return false;
+  }
+  return true;
+}
+
+export function inside_rectangle(
+  c: number,
+  r: number,
+  minc: number,
+  minr: number,
+  maxc: number,
+  maxr: number,
+): boolean {
+  if (c >= minc && c <= maxc && r >= minr && r <= maxr) {
+    return true;
+  }
+  return false;
 }
 
 export class Grid {
@@ -140,6 +211,13 @@ export function randint(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+export function randpercent(threshold: number): boolean {
+  if (randint(1, 100) <= threshold) {
+    return true;
+  }
+  return false;
 }
 
 // Text wrapping:
