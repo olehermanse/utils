@@ -430,7 +430,7 @@ export class Drawer<T extends Canvas> {
     this.ctx.putImageData(rect, 0, 0);
   }
 
-  WHITE_pixel(pos: XY) {
+  white_pixel(pos: XY) {
     // TODO: Look for more efficient way of editing the image data
     const pixel = this.ctx.createImageData(1, 1);
     pixel.data[0] = 255; // R
@@ -440,7 +440,7 @@ export class Drawer<T extends Canvas> {
     this.ctx.putImageData(pixel, pos.x, pos.y);
   }
 
-  WHITE_square(pos: XY, scale: number) {
+  white_square(pos: XY, scale: number) {
     const pixel = this.ctx.createImageData(scale, scale);
     for (let i = 0; i < 4 * scale * scale; i += 4) {
       pixel.data[i] = 255; // R
