@@ -568,4 +568,55 @@ export class Drawer<T extends Canvas> {
     this.ctx.putImageData(right, x + width - 1, y);
     this.ctx.putImageData(bottom, x, y + height - 1);
   }
+
+  dotted_rectangle(pos: XY, size: WH) {
+    let x = pos.x;
+    let y = pos.y;
+    let width = size.width;
+    let height = size.height;
+    if (this.autoscale) {
+      x = x * SCALE();
+      y = y * SCALE();
+      width = width * SCALE();
+      height = height * SCALE();
+    }
+    const left = this.ctx.createImageData(1, height);
+    const right = this.ctx.createImageData(1, height);
+    const top = this.ctx.createImageData(width, 1);
+    const bottom = this.ctx.createImageData(width, 1);
+
+    // Draw top and bottom lines:
+    for (let i = 0; i < width - 1; i += 2) {
+      top.data[i * 4 + 0] = 255;
+      top.data[i * 4 + 1] = 255;
+      top.data[i * 4 + 2] = 255;
+      top.data[i * 4 + 3] = 255;
+      bottom.data[i * 4 + 0] = 255;
+      bottom.data[i * 4 + 1] = 255;
+      bottom.data[i * 4 + 2] = 255;
+      bottom.data[i * 4 + 3] = 255;
+    }
+
+    // Draw left and right lines:
+    for (let i = 0; i < height - 1; i += 2) {
+      left.data[i * 4 + 0] = 255;
+      left.data[i * 4 + 1] = 255;
+      left.data[i * 4 + 2] = 255;
+      left.data[i * 4 + 3] = 255;
+      right.data[i * 4 + 0] = 255;
+      right.data[i * 4 + 1] = 255;
+      right.data[i * 4 + 2] = 255;
+      right.data[i * 4 + 3] = 255;
+    }
+
+    // Always make last pixel white.
+    right.data[(height - 1) * 4 + 0] = 255;
+    right.data[(height - 1) * 4 + 1] = 255;
+    right.data[(height - 1) * 4 + 2] = 255;
+    right.data[(height - 1) * 4 + 3] = 255;
+    this.ctx.putImageData(top, x, y);
+    this.ctx.putImageData(left, x, y);
+    this.ctx.putImageData(right, x + width - 1, y);
+    this.ctx.putImageData(bottom, x, y + height - 1);
+  }
 }
