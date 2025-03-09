@@ -539,35 +539,53 @@ export class Drawer<T extends Canvas> {
       width = width * SCALE();
       height = height * SCALE();
     }
-    const lr_height = height - 2;
-    const left = this.ctx.createImageData(1, lr_height);
-    const right = this.ctx.createImageData(1, lr_height);
     const top = this.ctx.createImageData(width, 1);
-    const bottom = this.ctx.createImageData(width, 1);
     for (let i = 0; i < width; i++) {
       top.data[i * 4 + 0] = 255;
       top.data[i * 4 + 1] = 255;
       top.data[i * 4 + 2] = 255;
       top.data[i * 4 + 3] = 255;
+    }
+    this.ctx.putImageData(top, x, y);
+
+    if (height <= 1) {
+      return;
+    }
+
+    const bottom = this.ctx.createImageData(width, 1);
+    for (let i = 0; i < width; i++) {
       bottom.data[i * 4 + 0] = 255;
       bottom.data[i * 4 + 1] = 255;
       bottom.data[i * 4 + 2] = 255;
       bottom.data[i * 4 + 3] = 255;
     }
+    this.ctx.putImageData(bottom, x, y + height - 1);
+
+    if (height <= 2) {
+      return;
+    }
+
+    const lr_height = height - 2;
+    const left = this.ctx.createImageData(1, lr_height);
     for (let i = 0; i < lr_height; i++) {
       left.data[i * 4 + 0] = 255;
       left.data[i * 4 + 1] = 255;
       left.data[i * 4 + 2] = 255;
       left.data[i * 4 + 3] = 255;
+    }
+    this.ctx.putImageData(left, x, y + 1);
+
+    if (width <= 1) {
+      return;
+    }
+
+    const right = this.ctx.createImageData(1, lr_height);
+    for (let i = 0; i < lr_height; i++) {
       right.data[i * 4 + 0] = 255;
       right.data[i * 4 + 1] = 255;
       right.data[i * 4 + 2] = 255;
       right.data[i * 4 + 3] = 255;
     }
-
-    this.ctx.putImageData(top, x, y);
-    this.ctx.putImageData(bottom, x, y + height - 1);
-    this.ctx.putImageData(left, x, y + 1);
     this.ctx.putImageData(right, x + width - 1, y + 1);
   }
 
@@ -582,48 +600,67 @@ export class Drawer<T extends Canvas> {
       width = width * SCALE();
       height = height * SCALE();
     }
-    const lr_height = height - 2;
-    const left = this.ctx.createImageData(1, lr_height);
-    const right = this.ctx.createImageData(1, lr_height);
-    const top = this.ctx.createImageData(width, 1);
-    const bottom = this.ctx.createImageData(width, 1);
 
-    // Draw top and bottom lines:
+    // Draw top line:
+    const top = this.ctx.createImageData(width, 1);
     for (let i = 0; i < width; i += 2) {
       top.data[i * 4 + 0] = 255;
       top.data[i * 4 + 1] = 255;
       top.data[i * 4 + 2] = 255;
       top.data[i * 4 + 3] = 255;
+    }
+    // Always make last pixel white.
+    top.data[(width - 1) * 4 + 0] = 255;
+    top.data[(width - 1) * 4 + 1] = 255;
+    top.data[(width - 1) * 4 + 2] = 255;
+    top.data[(width - 1) * 4 + 3] = 255;
+    this.ctx.putImageData(top, x, y);
+
+    if (height <= 1) {
+      return;
+    }
+
+    // Draw bottom line:
+    const bottom = this.ctx.createImageData(width, 1);
+    for (let i = 0; i < width; i += 2) {
       bottom.data[i * 4 + 0] = 255;
       bottom.data[i * 4 + 1] = 255;
       bottom.data[i * 4 + 2] = 255;
       bottom.data[i * 4 + 3] = 255;
     }
-    top.data[(width - 1) * 4 + 0] = 255;
-    top.data[(width - 1) * 4 + 1] = 255;
-    top.data[(width - 1) * 4 + 2] = 255;
-    top.data[(width - 1) * 4 + 3] = 255;
+    // Always make last pixel white.
     bottom.data[(width - 1) * 4 + 0] = 255;
     bottom.data[(width - 1) * 4 + 1] = 255;
     bottom.data[(width - 1) * 4 + 2] = 255;
     bottom.data[(width - 1) * 4 + 3] = 255;
-    // Always make last pixel white.
 
-    // Draw left and right lines:
+    this.ctx.putImageData(bottom, x, y + height - 1);
+
+    if (height <= 2) {
+      return;
+    }
+
+    // Draw left line:
+    const lr_height = height - 2;
+    const left = this.ctx.createImageData(1, lr_height);
     for (let i = 1; i < lr_height; i += 2) {
       left.data[i * 4 + 0] = 255;
       left.data[i * 4 + 1] = 255;
       left.data[i * 4 + 2] = 255;
       left.data[i * 4 + 3] = 255;
+    }
+    this.ctx.putImageData(left, x, y + 1);
+    if (width <= 1) {
+      return;
+    }
+    // Draw right line:
+    const right = this.ctx.createImageData(1, lr_height);
+    for (let i = 1; i < lr_height; i += 2) {
       right.data[i * 4 + 0] = 255;
       right.data[i * 4 + 1] = 255;
       right.data[i * 4 + 2] = 255;
       right.data[i * 4 + 3] = 255;
     }
-
-    this.ctx.putImageData(top, x, y);
-    this.ctx.putImageData(bottom, x, y + height - 1);
-    this.ctx.putImageData(left, x, y + 1);
     this.ctx.putImageData(right, x + width - 1, y + 1);
   }
 }
