@@ -539,8 +539,9 @@ export class Drawer<T extends Canvas> {
       width = width * SCALE();
       height = height * SCALE();
     }
-    const left = this.ctx.createImageData(1, height);
-    const right = this.ctx.createImageData(1, height);
+    const lr_height = height - 2;
+    const left = this.ctx.createImageData(1, lr_height);
+    const right = this.ctx.createImageData(1, lr_height);
     const top = this.ctx.createImageData(width, 1);
     const bottom = this.ctx.createImageData(width, 1);
     for (let i = 0; i < width; i++) {
@@ -553,7 +554,7 @@ export class Drawer<T extends Canvas> {
       bottom.data[i * 4 + 2] = 255;
       bottom.data[i * 4 + 3] = 255;
     }
-    for (let i = 0; i < height; i++) {
+    for (let i = 0; i < lr_height; i++) {
       left.data[i * 4 + 0] = 255;
       left.data[i * 4 + 1] = 255;
       left.data[i * 4 + 2] = 255;
@@ -563,10 +564,11 @@ export class Drawer<T extends Canvas> {
       right.data[i * 4 + 2] = 255;
       right.data[i * 4 + 3] = 255;
     }
+
     this.ctx.putImageData(top, x, y);
-    this.ctx.putImageData(left, x, y);
-    this.ctx.putImageData(right, x + width - 1, y);
     this.ctx.putImageData(bottom, x, y + height - 1);
+    this.ctx.putImageData(left, x, y + 1);
+    this.ctx.putImageData(right, x + width - 1, y + 1);
   }
 
   dotted_rectangle(pos: XY, size: WH) {
@@ -580,13 +582,14 @@ export class Drawer<T extends Canvas> {
       width = width * SCALE();
       height = height * SCALE();
     }
-    const left = this.ctx.createImageData(1, height);
-    const right = this.ctx.createImageData(1, height);
+    const lr_height = height - 2;
+    const left = this.ctx.createImageData(1, lr_height);
+    const right = this.ctx.createImageData(1, lr_height);
     const top = this.ctx.createImageData(width, 1);
     const bottom = this.ctx.createImageData(width, 1);
 
     // Draw top and bottom lines:
-    for (let i = 0; i < width - 1; i += 2) {
+    for (let i = 0; i < width; i += 2) {
       top.data[i * 4 + 0] = 255;
       top.data[i * 4 + 1] = 255;
       top.data[i * 4 + 2] = 255;
@@ -596,9 +599,18 @@ export class Drawer<T extends Canvas> {
       bottom.data[i * 4 + 2] = 255;
       bottom.data[i * 4 + 3] = 255;
     }
+    top.data[(width - 1) * 4 + 0] = 255;
+    top.data[(width - 1) * 4 + 1] = 255;
+    top.data[(width - 1) * 4 + 2] = 255;
+    top.data[(width - 1) * 4 + 3] = 255;
+    bottom.data[(width - 1) * 4 + 0] = 255;
+    bottom.data[(width - 1) * 4 + 1] = 255;
+    bottom.data[(width - 1) * 4 + 2] = 255;
+    bottom.data[(width - 1) * 4 + 3] = 255;
+    // Always make last pixel white.
 
     // Draw left and right lines:
-    for (let i = 0; i < height - 1; i += 2) {
+    for (let i = 1; i < lr_height; i += 2) {
       left.data[i * 4 + 0] = 255;
       left.data[i * 4 + 1] = 255;
       left.data[i * 4 + 2] = 255;
@@ -609,14 +621,9 @@ export class Drawer<T extends Canvas> {
       right.data[i * 4 + 3] = 255;
     }
 
-    // Always make last pixel white.
-    right.data[(height - 1) * 4 + 0] = 255;
-    right.data[(height - 1) * 4 + 1] = 255;
-    right.data[(height - 1) * 4 + 2] = 255;
-    right.data[(height - 1) * 4 + 3] = 255;
     this.ctx.putImageData(top, x, y);
-    this.ctx.putImageData(left, x, y);
-    this.ctx.putImageData(right, x + width - 1, y);
     this.ctx.putImageData(bottom, x, y + height - 1);
+    this.ctx.putImageData(left, x, y + 1);
+    this.ctx.putImageData(right, x + width - 1, y + 1);
   }
 }
