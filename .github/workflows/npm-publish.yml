@@ -34,6 +34,8 @@ jobs:
   bump-version:
     needs: publish-npm
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
