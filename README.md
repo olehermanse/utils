@@ -10,7 +10,8 @@ I use these across a few different projects;
 
 Here are the steps to make a new version:
 
-1. Check that `package.json` has the correct version: https://github.com/olehermanse/utils/blob/main/package.json#L3
+1. Check that `package.json` has the correct version:
+   https://github.com/olehermanse/utils/blob/main/package.json#L3
    - It should be the version you want to release.
    - Change it if necessary, for example to bump major or minor version.
 2. Create a release in GitHub:

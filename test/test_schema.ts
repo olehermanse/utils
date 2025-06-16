@@ -25,27 +25,27 @@ class FooBar implements SchemaClass {
 
 describe("to_class", () => {
   test("a valid string", () => {
-    let s = '{"foo": "bar"}';
-    let a = to_class(s, new FooBar());
+    const s = '{"foo": "bar"}';
+    const a = to_class(s, new FooBar());
     expect(a).not.toBe(null);
     expect(a).not.toBeInstanceOf(Error);
     expect(a?.foo).toBe("bar");
   });
   test("a valid object", () => {
-    let s = { foo: "bar" };
-    let a = <FooBar> to_class(s, new FooBar());
+    const s = { foo: "bar" };
+    const a = <FooBar> to_class(s, new FooBar());
     expect(a).not.toBe(null);
     expect(a).not.toBeInstanceOf(Error);
     expect(a?.foo).toBe("bar");
   });
   test("a wrong type", () => {
-    let s = { foo: 123 };
-    let a = to_class(s, new FooBar());
+    const s = { foo: 123 };
+    const a = to_class(s, new FooBar());
     expect(a).toBeInstanceOf(Error);
   });
   test("a missing field", () => {
-    let s = {};
-    let a = to_class(s, new FooBar());
+    const s = {};
+    const a = to_class(s, new FooBar());
     expect(a).toBeInstanceOf(Error);
   });
 });

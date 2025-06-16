@@ -31,6 +31,13 @@ export const GREY = "#666666";
 export const PI = 3.14159;
 export const LINE_RATIO = 0.1;
 
+const BLACK_PIXEL = new ImageData(new Uint8ClampedArray([0, 0, 0, 255]), 1, 1);
+const WHITE_PIXEL = new ImageData(
+  new Uint8ClampedArray([255, 255, 255, 255]),
+  1,
+  1,
+);
+
 let custom_scale: number | undefined = undefined;
 
 export function set_custom_scale(s: number) {
@@ -419,25 +426,12 @@ export class Drawer<T extends Canvas> {
   clear() {
     const width = this.canvas.width;
     const height = this.canvas.height;
-    const rect = this.ctx.createImageData(width, height);
-    // Each pixel is 4 8 bit int (RGBA)
-    // Defaults to all zeroes (all black and transparent)
-    // Loop through all pixels, removing the transparency:
-    for (let i = 0; i < width * height; i++) {
-      rect.data[3 + i * 4] = 255; // Set alpha to 100%, not transparent
-      // Leave other pixels alone, they are black.
-    }
-    this.ctx.putImageData(rect, 0, 0);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, width, height);
   }
 
   white_pixel(pos: XY) {
-    // TODO: Look for more efficient way of editing the image data
-    const pixel = this.ctx.createImageData(1, 1);
-    pixel.data[0] = 255; // R
-    pixel.data[1] = 255; // G
-    pixel.data[2] = 255; // B
-    pixel.data[3] = 255; // A
-    this.ctx.putImageData(pixel, pos.x, pos.y);
+    this.ctx.putImageData(WHITE_PIXEL, pos.x, pos.y);
   }
 
   white_square(pos: XY, scale: number) {
@@ -452,13 +446,7 @@ export class Drawer<T extends Canvas> {
   }
 
   black_pixel(pos: XY) {
-    // TODO: Look for more efficient way of editing the image data
-    const pixel = this.ctx.createImageData(1, 1);
-    pixel.data[0] = 0; // R
-    pixel.data[1] = 0; // G
-    pixel.data[2] = 0; // B
-    pixel.data[3] = 255; // A
-    this.ctx.putImageData(pixel, pos.x, pos.y);
+    this.ctx.putImageData(BLACK_PIXEL, pos.x, pos.y);
   }
 
   black_square(pos: XY, scale: number) {
