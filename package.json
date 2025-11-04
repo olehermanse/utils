@@ -1,6 +1,6 @@
 {
   "name": "@olehermanse/utils",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Utility functions in js / ts",
   "type": "module",
   "author": "Ole Herman S. Elgesem",
