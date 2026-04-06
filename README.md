@@ -22,9 +22,9 @@ Here are the steps to make a new version:
 3. Check that the release has been published on npm:
    - https://www.npmjs.com/package/@olehermanse/utils
    - This is done automatically by the GitHub Action after creating a release.
-4. Check that the version number has been bumped:
-   - https://github.com/olehermanse/utils/commits/main/
-   - The GitHub Action will automatically push a commit bumping the patch version.
+4. Check that the version number has been bumped in a PR:
+   - https://github.com/olehermanse/utils/pulls
+   - The GitHub Action will automatically make a PR bumping the version
    - Manually bump minor or major version if you know that is what you'll release next:
      - https://github.com/olehermanse/utils/blob/main/package.json#L3
 
