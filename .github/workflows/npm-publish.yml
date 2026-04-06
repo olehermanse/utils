@@ -54,4 +54,7 @@ jobs:
         with:
           draft: always-true
           base: main
+          title: Bumped @olerhemanse/utils version number after release
+          body: |
+            This PR updates the version of the package in package.json / package-lock.json after a release.
           sign-commits: true
