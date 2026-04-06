@@ -53,7 +53,7 @@ jobs:
           git diff --exit-code || touch git_diff_exists
           if [ -f git_diff_exists ]; then echo "Changes need to be commited"; else echo "No changes to commit"; fi
 
-      - name: Commit and push
+      - name: Commit
         if: hashFiles('git_diff_exists') != ''
         run: |
           git config user.name 'GitHub'
@@ -64,3 +64,7 @@ jobs:
           git reset --hard HEAD
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
+        with:
+          draft: always-true
+          base: main
+          sign-commits: true
