@@ -28,16 +28,4 @@ Here are the steps to make a new version:
    - Manually bump minor or major version if you know that is what you'll release next:
      - https://github.com/olehermanse/utils/blob/main/package.json#L3
 
-## Token for publishing to npmjs.com
-
-One secret is needed for the publishing action to work - `NPM_TOKEN`.
-After logging into npmjs.com it is generated here:
-
-https://www.npmjs.com/settings/olehermanse/tokens
-
-I use a granular token with access to only this repository, and expiration of ~1 year.
-This is entered into GH UI here:
-
-https://github.com/olehermanse/utils/settings/secrets/actions
-
-The token is not stored anywhere else and must be regenerated if expired or compromised.
+Trusted publishing must be configured on npmjs.com there are no GH secrets / npm tokens.
