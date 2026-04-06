@@ -40,11 +40,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
 
       - name: Bump version
         run: python3 .github/workflows/bump-version.py
+      - name: Regenerate JSON
+        run: rm package-lock.json && npm install
 
       - name: Check if there are changes
         run: |
