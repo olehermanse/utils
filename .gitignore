@@ -27,7 +27,6 @@ lerna-debug.log*
 *.sln
 *.sw?
 .gitpod.yml
-*.js
 
 
 # GH Actions:
